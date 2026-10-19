@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Koperasi SMK Muthia Harapan Cicalengka</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- HALAMAN LOGIN & REGISTRASI -->
+    <div id="login-page" class="login-container">
+        <div class="login-box">
+            <img src="logo.jpeg" alt="Logo Koperasi" class="login-logo">
+            
+            <!-- FORM LOGIN -->
+            <div id="form-login">
+                <h2>LOGIN SISWA</h2>
+                <p>Masukkan akun siswa untuk mengakses koperasi</p>
+                <form onsubmit="prosesLogin(event)">
+                    <div class="form-group">
+                        <label>NIS / Username:</label>
+                        <input type="text" id="username" placeholder="Masukkan Username" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password:</label>
+                        <input type="password" id="password" placeholder="Masukkan Password" required>
+                    </div>
+                    <button type="submit" class="btn-gold" style="width: 100%; border-radius: 6px; margin-top: 10px;">MASUK</button>
+                </form>
+                <p style="font-size: 0.85rem; margin-top: 15px; color: #555;">
+                    Belum punya akun? <a href="#" onclick="toggleForm('register')" style="color: #0b2240; font-weight: bold;">Daftar di sini</a>
+                </p>
+            </div>
+
+            <!-- FORM REGISTRASI -->
+            <div id="form-register" style="display: none;">
+                <h2>DAFTAR AKUN</h2>
+                <p>Buat akun siswa baru kamu sendiri</p>
+                <form onsubmit="prosesDaftar(event)">
+                    <div class="form-group">
+                        <label>Buat Username / NIS:</label>
+                        <input type="text" id="reg-username" placeholder="Contoh: Budi123" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Buat Password:</label>
+                        <input type="password" id="reg-password" placeholder="Buat Password Sendiri" required>
+                    </div>
+                    <button type="submit" class="btn-gold" style="width: 100%; border-radius: 6px; margin-top: 10px;">DAFTAR SEKARANG</button>
+                </form>
+                <p style="font-size: 0.85rem; margin-top: 15px; color: #555;">
+                    Sudah punya akun? <a href="#" onclick="toggleForm('login')" style="color: #0b2240; font-weight: bold;">Login di sini</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- AREA UTAMA APLIKASI -->
+    <div id="app-content" style="display: none;">
+        
+        <!-- HEADER / NAVBAR -->
+        <header>
+            <div class="logo-section">
+                <img src="logo.jpeg" alt="Logo Koperasi" class="site-logo">
+                <span class="site-title">KOPERASI SMK MUTHIA HARAPAN CICALENGKA</span>
+            </div>
+            
+            <nav>
+                <a onclick="navigate('beranda')" id="nav-beranda" class="active">Beranda</a>
+                <a onclick="navigate('produk')" id="nav-produk">Produk</a>
+                <a onclick="navigate('detail')" id="nav-detail">Lihat Detail</a>
+                <a onclick="navigate('profil')" id="nav-profil">Profil/Tentang</a>
+            </nav>
+
+            <div class="header-actions">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Search..." onkeyup="cariProduk()">
+                    <button class="btn-search">🔍</button>
+                </div>
+                <button class="cart-icon" onclick="navigate('keranjang')">
+                    🛒<span class="cart-badge" id="cartBadge">0</span>
+                </button>
+                <button onclick="logout()" class="btn-logout">Keluar</button>
+            </div>
+        </header>
+
+        <div class="container">
+            <!-- 1. HALAMAN BERANDA -->
+            <div id="beranda" class="page active">
+                <div class="hero-banner">
+                    <h1>SELAMAT DATANG!</h1>
+                    <p>Selamat Datang di Koperasi Digital SMK Muthia Harapan Cicalengka. Penyedia resmi seragam dan atribut sekolah lengkap.</p>
+                    <button class="btn-gold-banner" onclick="navigate('produk')">Belanja Sekarang</button>
+                </div>
+            </div>
+
+            <!-- 2. HALAMAN PRODUK -->
+            <div id="produk" class="page">
+                <div class="section-heading">
+                    <span class="yellow-bar"></span> SEMUA PRODUK
+                </div>
+                <div class="product-grid" id="allProductGrid"></div>
+            </div>
+
+            <!-- 3. HALAMAN DETAIL PRODUK -->
+            <div id="detail" class="page">
+                <div class="section-heading">
+                    <span class="yellow-bar"></span> DETAIL PRODUK
+                </div>
+                <div class="detail-container">
+                    <div class="detail-card-left">
+                        <img id="detailImg" src="" alt="Gambar Produk">
+                        <h3 id="detailTitle">Nama Produk</h3>
+                        <p class="price-text" id="detailPrice">Rp 0</p>
+                        <div class="size-select-wrapper">
+                            <select id="detailSizeSelect">
+                                <option value="XS">Ukuran XS</option>
+                                <option value="S">Ukuran S</option>
+                                <option value="M" selected>Ukuran M</option>
+                                <option value="L">Ukuran L</option>
+                                <option value="XL">Ukuran XL</option>
+                                <option value="XXL">Ukuran XXL</option>
+                            </select>
+                        </div>
+                        <button class="btn-gold-action" onclick="tambahKeKeranjangDariDetail()">+ Tambah Keranjang</button>
+                    </div>
+
+                    <div class="detail-card-right">
+                        <ul class="size-radio-list">
+                            <li><label><input type="radio" name="ukuran" value="XS" onclick="syncSize('XS')"> Ukuran : XS</label></li>
+                            <li><label><input type="radio" name="ukuran" value="S" onclick="syncSize('S')"> Ukuran : S</label></li>
+                            <li><label><input type="radio" name="ukuran" value="M" checked onclick="syncSize('M')"> Ukuran : M</label></li>
+                            <li><label><input type="radio" name="ukuran" value="L" onclick="syncSize('L')"> Ukuran : L</label></li>
+                            <li><label><input type="radio" name="ukuran" value="XL" onclick="syncSize('XL')"> Ukuran : XL</label></li>
+                            <li><label><input type="radio" name="ukuran" value="XXL" onclick="syncSize('XXL')"> Ukuran : XXL</label></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. HALAMAN KERANJANG & CHECKOUT -->
+            <div id="keranjang" class="page">
+                <div class="section-heading">
+                    <span class="yellow-bar"></span> KERANJANG BELANJA
+                </div>
+                <table class="cart-table">
+                    <thead>
+                        <tr>
+                            <th>Produk</th>
+                            <th>Ukuran</th>
+                            <th>Harga</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cartTableBody">
+                        <tr><td colspan="4" style="text-align: center;">Keranjang Anda Kosong</td></tr>
+                    </tbody>
+                </table>
+
+                <div class="cart-total-bar">
+                    Total Pembayaran : Rp. <span id="cartTotal">0</span>
+                </div>
+
+                <div class="checkout-box">
+                    <div class="section-heading-sub">FORM PEMESANAN</div>
+                    <form onsubmit="checkout(event)">
+                        <div class="form-group">
+                            <label>Nama Lengkap Siswa :</label>
+                            <input type="text" id="custName" required placeholder="Contoh: Budi Santoso">
+                        </div>
+                        <div class="form-group">
+                            <label>Kelas :</label>
+                            <input type="text" id="custClass" required placeholder="Contoh: XII RPL 1">
+                        </div>
+                        <button type="submit" class="btn-green-wa">📱 Kirim Pesanan via WhatsApp</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- 5. HALAMAN PROFIL -->
+            <div id="profil" class="page">
+                <div class="section-heading">
+                    <span class="yellow-bar"></span> PROFIL KOPERASI SEKOLAH
+                </div>
+                <div class="profile-card">
+                    <p><strong>Nama Koperasi:</strong> Koperasi Digital Siswa Mandiri</p>
+                    <p><strong>Jam Operasional:</strong> Senin - Jumat (07.00 - 15.00 WIB)</p>
+                    <p><strong>Lokasi:</strong> Gedung Utama, Samping Kantin Sekolah</p>
+                    <p><strong>Layanan:</strong> Menyediakan kebutuhan seragam resmi (OSIS, Pramuka, Jas Almamater, Baju Batik, Kaos Olahraga, Baju Jurusan), topi, dasi, dan atribut sekolah lengkap.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
